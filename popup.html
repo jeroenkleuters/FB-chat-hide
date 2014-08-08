@@ -1,27 +1,18 @@
 <!doctype html>
 <html>
   <head>
-    <title>FaceBook chat hide!</title>
+    <title>Stylizr</title>
     <style>
-      .fb-chat-hidden {
-        height: 30px;}
+      body {
+        font-family: sans-serif;
+        width: 200px;
       }
     </style>
-
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: http://developer.chrome.com/extensions/contentSecurityPolicy.html
-     -->
-     <script>
-    new Notification("Simple Background App", {
-      body: "A background window has been created"
-    });
-  </script>
-    <script src="fb-chat-hidden.js"></script>
   </head>
   <body>
+    <div id="message"></div>
+    <script src="fb-chat-hidden.js"></script>
   </body>
 </html>
+
 

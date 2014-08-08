@@ -3,53 +3,44 @@
 // found in the LICENSE file.
 
 /**
- * Global variable containing the query we'd like to pass to Flickr. In this
- * case, kittens!
+ * 
  *
  * @type {string}
  */
-var className = '.fbDockChatTabFlyout';
+var storage = chrome.storage.local;
 
-function toggle_visibility(className) {
-   console.log('test');
-   var elements = getElementsByClassName(document, className),
-       n = elements.length;
-   for (var i = 0; i < n; i++) {
-     var e = elements[i];
+var className = 'fbDockChatTabFlyout',
+      cssVal = '',
+      cssHide = ['All chats are hidden','.fbDockChatTabFlyout{ display:none !important }', 1],
+      cssShow = ['All chats are shown', '.fbDockChatTabFlyout{ display:block !important }', 0]
 
-     if(e.style.display == 'block') {
-       //e.style.display = 'none !important';
-       e.style.height = '28px';
-     } else {
-       e.style.display = 'block !important';
-     }
-  }
+
+var message = document.querySelector('#message');
+
+function setDisplayValue(cssVal){
+   chrome.tabs.insertCSS({code: cssVal[1]}, function() {
+      if (chrome.runtime.lastError) {
+         message.innerText = 'Not allowed to inject CSS into special page.';
+      } else {
+         storage.set({'hidden': cssVal[2]}, function() {
+            message.innerText = cssVal[0];
+         });        
+      }
+   });
 }
 
-function getElementsByClassName(node,classname) {
-   if (node.getElementsByClassName) { // use native implementation if available
-       return node.getElementsByClassName(classname);
-     } else {
-      return (function getElementsByClass(searchClass,node) {
-          if ( node == null )
-            node = document;
-          var classElements = [],
-              els = node.getElementsByTagName("*"),
-              elsLen = els.length,
-              pattern = new RegExp("(^|\\s)"+searchClass+"(\\s|$)"), i, j;
-  
-          for (i = 0, j = 0; i < elsLen; i++) {
-            if ( pattern.test(els[i].className) ) {
-                classElements[j] = els[i];
-                j++;
-            }
-          }
-          return classElements;
-      })(classname, node);
-   }
-}
 
 // Run our kitten generation script as soon as the document's DOM is ready.
 document.addEventListener('DOMContentLoaded', function () {
-   toggle_visibility(className);
+   //toggleVisibility(className);
+   storage.get({hidden: ''}, function(e){
+      // To avoid checking items.css we could specify storage.get({css: ''}) to
+      // return a default value of '' if there is no css value yet.
+      if (e.hidden == 1 ) {
+        setDisplayValue(cssShow);
+      } else {
+        setDisplayValue(cssHide);
+      }                            
+   })
+   
 });
